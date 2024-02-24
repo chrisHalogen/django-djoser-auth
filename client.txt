@@ -1,0 +1,54 @@
+import requests
+
+def make_http_request(url, method='GET', params=None, data=None, headers=None, auth=None):
+    try:
+        response = requests.request(method, url, params=params, data=data, headers=headers, auth=auth)
+
+        print(f"Request: {method} {url}")
+        print(f"Status Code: {response.status_code}")
+        print("Headers:")
+        for key, value in response.headers.items():
+            print(f"    {key}: {value}")
+
+        if response.text:
+            # print("Response:")
+            # print(response.text)
+            
+            return response.text
+        else:
+            return None
+
+        
+    except requests.RequestException as e:
+        print(f"An error occurred: {e}")
+        
+        
+        
+------------------
+
+import json
+from pprint import pprint
+url = "http://127.0.0.1:8000/api/v1/users/"
+
+data = {
+    "first_name": "",
+    "last_name": "",
+    "email":"",
+    "username" : "",
+    "password" : "",
+    "re_password" : "",
+}
+
+# After this process, User is not active, email must be verified
+result_json = make_http_request(url, method='POST', data=data)
+if result_json:
+    result_dict = json.loads(result_json)
+    print("\n\nResponse Data:")
+    pprint(result_dict)
+    
+
+curl \
+	-X POST\
+	-H "COntent-Type:application/json"\
+	-d '{"refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcwODc5NTEyMiwiaWF0IjoxNzA4NzA4NzIyLCJqdGkiOiI4Njc3ODljMzJiZWQ0ODA3OGIxNDc3MTI3OTdjZTNmMCIsInVzZXJfaWQiOjN9.xVTEaV41hQ8Pk1OTIhxBz09gmlK63UpfRneLdV6m0NU"}'\
+	http://127.0.0.1:8000/api/v1/jwt/refresh/
